@@ -1,5 +1,5 @@
 ## Audio Transporter ROS Nodes
-ROS nodes that provides audio-type topics.
+ROS nodes that provides audio-type topics. It's a fork of `rosjack` ROS package.
 
 #### Installation
 
