@@ -5,7 +5,7 @@
 #include <mutex>
 #include <jack/jack.h>
 #include "ros/ros.h"
-#include "rosjack/Audio.h"
+#include "audio_transporter/Audio.h"
 
 jack_port_t *output_port;
 jack_client_t *client;
