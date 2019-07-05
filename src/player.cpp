@@ -36,7 +36,7 @@ int main (int argc, char *argv[]) {
 	printf ("Creating ROSJack_Read node...");
 	ros::init(argc, argv, client_name);
 	ros::NodeHandle n;
-	rosjack_out = n.advertise<rosjack::Audio>("audio", 1000);
+	rosjack_out = n.advertise<audio_transporter::Audio>("audio", 1000);
 	printf (" done.\n");
 
 	printf ("Connecting to Jack Server...\n");

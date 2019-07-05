@@ -35,7 +35,7 @@ void jack_shutdown (void *arg){
 	exit (1);
 }
 
-void jackaudioCallback(const rosjack::Audio::ConstPtr& msg){
+void jackaudioCallback(const audio_transporter::Audio::ConstPtr& msg){
 	int msg_size = msg->size;
 	
 	mtx.lock();
