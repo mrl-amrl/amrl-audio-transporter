@@ -1,8 +1,8 @@
 <launch>
-    <node pkg="rosjack" type="sender" name="ocu_audio_sender">
+    <node pkg="audio_transporter" type="sender" name="ocu_audio_sender">
         <remap from="audio" to="/ocu/audio"/>
     </node>
-    <node pkg="rosjack" type="player" name="ocu_audio_player">
+    <node pkg="audio_transporter" type="player" name="ocu_audio_player">
         <remap from="audio" to="/robot/audio"/>
     </node>
 </launch>

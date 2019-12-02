@@ -22,15 +22,12 @@ catkin_package(
   CATKIN_DEPENDS roscpp std_msgs message_runtime
 )
 
-INCLUDE(FindPkgConfig)
-pkg_check_modules (JACK jack)
+find_package(jack)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${JACK_INCLUDE_DIRS}
 )
-
-find_package(jack)
 
 add_executable(sender src/sender.cpp)
 add_executable(player src/player.cpp)
