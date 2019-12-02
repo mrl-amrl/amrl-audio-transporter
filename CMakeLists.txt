@@ -30,6 +30,8 @@ include_directories(
   ${JACK_INCLUDE_DIRS}
 )
 
+find_package(jack)
+
 add_executable(sender src/sender.cpp)
 add_executable(player src/player.cpp)
 
