@@ -8,8 +8,14 @@ $ sudo apt install libjack-dev
 $ sudo apt install jack jackd
 ```
 
+#### List of your sound cards
+
+```
+$ cat /proc/asound/cards
+```
+
 #### Running JACK server
 
 ```
-$ jackd -R -P4 -dalsa -r44100 -p512 -n4 -D -Chw:0 -Phw:0
+$ jackd -R -P1 -dalsa -p512 -n4 -D -Chw:0 -Phw:0
 ```
