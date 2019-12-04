@@ -9,7 +9,7 @@
 
 jack_port_t *input_port;
 jack_client_t *client;
-ros::NodeHandle n;
+boost::shared_ptr<ros::NodeHandle> z;
 bool is_enabled = false;
 
 ros::Publisher rosjack_out;
@@ -39,7 +39,7 @@ void jack_shutdown(void *arg)
 void audio_enable_callback(const std_msgs::Bool::ConstPtr& msg) {
 	if (msg->data && !is_enabled) {
 		printf("[audio-sender] Creating ROSJack_Publisher node...\n");
-		rosjack_out = n.advertise<audio_transporter::Audio>("audio", 1000);
+		rosjack_out = z->advertise<audio_transporter::Audio>("audio", 1000);
 		printf("[audio-sender] done.\n");
 		return;
 	}
@@ -51,10 +51,11 @@ void audio_enable_callback(const std_msgs::Bool::ConstPtr& msg) {
 
 int main(int argc, char *argv[])
 {
-	const char *client_name = "jack_player";
+	const char *client_name = "jack_sender";
 	
 	ros::init(argc, argv, client_name);	
-	n.subscribe("audio_enable", 1, audio_enable_callback);		
+	z.reset(new ros::NodeHandle());
+	z->subscribe("audio_enable", 1, audio_enable_callback);		
 
 	printf("[audio-sender] Connecting to Jack Server...\n");
 	jack_options_t options = JackNoStartServer;
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 	}
 
 	printf("[audio-sender] Agent activated.\n");
-	printf("[audio-sender] Connecting ports... ");
+	printf("[audio-sender] Connecting ports... \n");
 
 	const char **serverports_names;
 	serverports_names = jack_get_ports(client, NULL, NULL, JackPortIsPhysical | JackPortIsOutput);
