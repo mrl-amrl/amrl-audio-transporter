@@ -73,7 +73,7 @@ void audio_enable_callback(const std_msgs::Bool::ConstPtr& msg) {
 
 int main(int argc, char *argv[])
 {
-	const char *client_name = "jack_player";
+	const char *client_name = "jack_sender";
 
 	printf("[audio-player] Connecting to Jack Server...\n");
 	jack_options_t options = JackNoStartServer;

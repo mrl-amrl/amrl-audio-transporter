@@ -51,7 +51,7 @@ void audio_enable_callback(const std_msgs::Bool::ConstPtr& msg) {
 
 int main(int argc, char *argv[])
 {
-	const char *client_name = "jack_sender";
+	const char *client_name = "jack_player";
 	
 	ros::init(argc, argv, client_name);	
 	z.reset(new ros::NodeHandle());
