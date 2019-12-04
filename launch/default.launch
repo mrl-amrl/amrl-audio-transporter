@@ -1,6 +1,6 @@
 <launch>
-    <node pkg="rosjack" type="sender" name="ocu_audio_sender">
+    <node pkg="audio_transporter" type="sender" name="ocu_audio_sender">
     </node>
-    <node pkg="rosjack" type="player" name="ocu_audio_player">
+    <node pkg="audio_transporter" type="player" name="ocu_audio_player">
     </node>
 </launch>
