@@ -10,14 +10,13 @@
 
 jack_port_t *output_port;
 jack_client_t *client;
-ros::Subscriber sub;
-boost::shared_ptr<ros::NodeHandle> z;
 bool is_enabled = false;
 
 jack_default_audio_sample_t *ros2jack_buffer;
 unsigned int buffer_size;
 unsigned int buffer_r = 0;
 unsigned int buffer_w = 0;
+const char *destination_port;
 
 std::mutex mtx;
 
@@ -58,17 +57,21 @@ void jackaudioCallback(const audio_transporter::Audio::ConstPtr &msg)
 	mtx.unlock();
 }
 
-void audio_enable_callback(const std_msgs::Bool::ConstPtr& msg) {
-	if (msg->data && !is_enabled) {
-		printf("[audio-player] Creating ROSJack_Subscriber node...\n");
-		sub = z->subscribe("audio", 1000, jackaudioCallback);
-		printf("[audio-player] done.\n");
-		return;
+void audio_enable_callback(const std_msgs::Bool::ConstPtr &msg)
+{
+	if (msg->data && !is_enabled)
+	{
+		if (jack_connect(client, jack_port_name(output_port), destination_port))
+		{
+			printf("[audio-player] Cannot connect output port.\n");
+			exit(1);
+		}
 	}
-	if (!msg->data && is_enabled) {
-		sub.shutdown();
-		return;
+	else if (!msg->data && is_enabled)
+	{
+		jack_disconnect(client, jack_port_name(output_port), destination_port);
 	}
+	is_enabled = msg->data;
 }
 
 int main(int argc, char *argv[])
@@ -87,7 +90,7 @@ int main(int argc, char *argv[])
 		{
 			printf("[audio-player] Unable to connect to JACK server.\n");
 		}
-		exit(1);
+		return 1;
 	}
 
 	if (status & JackNameNotUnique)
@@ -108,40 +111,33 @@ int main(int argc, char *argv[])
 	if ((output_port == NULL))
 	{
 		printf("[audio-player] Could not create agent ports. Have we reached the maximum amount of JACK agent ports?\n");
-		exit(1);
+		return 1;
 	}
 	if (jack_activate(client))
 	{
 		printf("[audio-player] Cannot activate client.");
-		exit(1);
+		return 1;
 	}
 
 	printf("[audio-player] Agent activated.\n");
-	printf("[audio-player] Connecting ports...\n");
 	const char **serverports_names;
 	serverports_names = jack_get_ports(client, NULL, NULL, JackPortIsPhysical | JackPortIsInput);
 	if (serverports_names == NULL)
 	{
 		printf("[audio-player] No available physical output (server input) ports.\n");
-		exit(1);
+		return 1;
 	}
-	if (jack_connect(client, jack_port_name(output_port), serverports_names[0]))
-	{
-		printf("[audio-player] Cannot connect output port.\n");
-		exit(1);
-	}
+	destination_port = serverports_names[0];
 	free(serverports_names);
-
-	printf("[audio-player] done.\n");
 
 	printf("[audio-player] Creating ROSJack_Subscriber node...\n");
 	ros::init(argc, argv, client_name);
-	z.reset(new ros::NodeHandle());
-	z->subscribe("audio_enable", 1, audio_enable_callback);		
+	ros::NodeHandle n;
+	ros::Subscriber subAudioEnable = n.subscribe("/audio/enable", 1, audio_enable_callback);
+	ros::Subscriber subAudio = n.subscribe("/audio", 1000, jackaudioCallback);
 	printf("[audio-player] done.\n");
 
 	ros::spin();
-
 	jack_client_close(client);
-	exit(0);
+	return 0;
 }
