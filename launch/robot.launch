@@ -1,8 +1,8 @@
 <launch>
     <node pkg="audio_transporter" type="sender" name="robot_audio_sender">
-        <remap from="audio" to="/robot/audio"/>
+        <remap from="/audio" to="/robot/audio"/>
     </node>
     <node pkg="audio_transporter" type="player" name="robot_audio_player">
-        <remap from="audio" to="/ocu/audio"/>
+        <remap from="/audio" to="/ocu/audio"/>
     </node>
 </launch>

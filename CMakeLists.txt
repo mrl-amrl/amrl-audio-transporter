@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(audio_transporter)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-narrowing")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-narrowing -Ljack")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -22,7 +22,8 @@ catkin_package(
   CATKIN_DEPENDS roscpp std_msgs message_runtime
 )
 
-find_package(jack)
+INCLUDE(FindPkgConfig)
+pkg_check_modules (JACK jack)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
